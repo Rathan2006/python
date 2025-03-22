@@ -1,2 +1,0 @@
-print("Pangram" if(set('abcdefghijklmnopqrstuvwxyz').issubset(set(input("Enter the sentence: ").lower()))) else "not Pangram")
-#print("Pangram" if(len(set(input("Enter the sentence: ").lower().replace(" ","")))==26) else "not Pangram")
