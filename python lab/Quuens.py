@@ -1,41 +1,51 @@
-import random
+import numpy as np
 
-def is_safe(board, row, col):
-    for i in range(row):
-        if board[i] == col or board[i] - i == col - row or board[i] + i == col + row:         
+n = int(input("Enter n: "))
+
+s = [" "] * (n * n)
+board = np.array(s)
+board = board.reshape((n, n))
+ans = []
+
+def isSafe(board, row, col, n):
+    #checking in column vertically up
+    for i in range(row, -1, -1):
+        if board[i][col] == 'Q':
             return False
+    
+    #right diagonal
+    i, j = row, col
+    while(i >= 0 and j < n):
+        if board[i][j] == 'Q':
+            return False
+        i -= 1
+        j += 1
+    
+    #left diagonal
+    i, j = row, col
+    while(i >= 0 and j >= 0):
+        if board[i][j] == 'Q':
+            return False
+        i -= 1
+        j -= 1
+
     return True
-def solve_n_queens(n):
-    solutions = []
-    board = [-1] * n
-    def place_queen(row):
-        if row == n:
-            solutions.append(board[:])
-            return True      
-        columns = list(range(n))
-        random.shuffle(columns)      
-        for col in columns:
-            if is_safe(board, row, col):
-                board[row] = col
-                if place_queen(row + 1):
-                    return True
-                board[row] = -1
-        return False  
-    place_queen(0)
-    return solutions
-def display_board(solution):
-    n = len(solution)
-    for row in range(n):
-        for col in range(n):
-            if solution[row] == col:
-                print("Q", end=" ")
-            else:
-                print(".", end=" ")
-        print()
-n = 8
-solutions = solve_n_queens(n)
-if solutions:
-    print("One solution:")
-    display_board(solutions[0])
-else:
-    print("No solution found.")
+    
+
+def nQueens(board, row, n, ans):
+    if (row == n):
+        ans.append(board.copy())
+        return
+    
+    for i in range(n):
+        if (isSafe(board, row, i, n)):
+            board[row][i] = 'Q'
+            nQueens(board, row + 1, n, ans)
+            board[row][i] = ' '
+
+nQueens(board, 0, n, ans)
+
+print("Favourable Positions: ")
+for _ in ans:
+    print(_)
+    print(" - - " * n)

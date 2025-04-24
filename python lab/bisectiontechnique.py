@@ -1,42 +1,53 @@
+import random 
 import numpy as np
 import matplotlib.pyplot as plt
-import random
 
-def polynomial_function(x):
-    return x**3 - 6*x**2 + 11*x - 6
 
-def bisection_method(f, a, b, tolerance=1e-6):
-    if f(a) * f(b) >= 0:
-        raise ValueError("The function must have different signs at the interval endpoints.")
-    updates = []
-    while abs(b - a) > tolerance:
-        midpoint = (a + b) / 2
-        updates.append(midpoint)
-        if f(midpoint) == 0:
-            break
-        elif f(a) * f(midpoint) < 0:
-            b = midpoint
-        else:
-            a = midpoint
-    return midpoint, np.array(updates)
+def f(x):
+    return x**3 - 2*x + 2
 
-random.seed(42)
+
+left, right = 0, 0
 while True:
-    a = random.uniform(-10, 10)
-    b = random.uniform(-10, 10)
-    if polynomial_function(a) * polynomial_function(b) < 0:
+    left = random.randint(-20, 0)
+    right = random.randint(0, 20)
+
+    if (left > right):
+        left, right = right , left
+
+    if f(left) * f(right) < 0:
         break
 
-root, updates_array = bisection_method(polynomial_function, a, b)
-x_values = np.linspace(-10, 10, 400)
-y_values = polynomial_function(x_values)
 
-plt.figure(figsize=(10, 6))
-plt.plot(x_values, y_values)
-plt.axhline(0, color='black', linestyle='--')
-plt.scatter(updates_array, polynomial_function(updates_array), color='red')
+
+def bisection(f, left, right, tol):
+    points = []
+    for i in range(20):
+        mid = (left + right) / 2
+        points.append(mid)
+        if f(mid) == 0 or (right - left) / 2 < tol:
+            break
+
+        if f(right) * f(mid) < 0:
+            left = mid
+        else:
+            right = mid
+        
+    return points
+
+
+x = bisection(f, left, right, 0.000001)
+
+curve_x = np.linspace(-20, 20, 41)
+curve_y = f(curve_x)
+
+plt.plot(curve_x, curve_y, label="Curve f(x)")
+plt.plot(x, [f(xi) for xi in x], 'ro-', label="Bisection points")
+plt.axhline(0, color='gray', linestyle='--')
+plt.axvline(0, color='gray', linestyle='--')
 plt.xlabel("x")
 plt.ylabel("f(x)")
-plt.title("Bisection Method - Root Finding Process")
-plt.grid()
+plt.legend()
+plt.title("Bisection Method Visualization")
+plt.grid(True)
 plt.show()

@@ -1,6 +1,9 @@
 import pandas as pd
 import random
+import numpy as np
+np.random.seed(0)
 days = [False, False, False, False,False, False, False, False, False, True]
+
 random.shuffle(days)
 idx = days.index(True)
 
